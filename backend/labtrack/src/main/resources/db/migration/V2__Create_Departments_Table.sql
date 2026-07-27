@@ -1,0 +1,10 @@
+CREATE TABLE departments (
+
+    id BIGSERIAL PRIMARY KEY,
+
+    department_name VARCHAR(100) NOT NULL UNIQUE,
+
+    description VARCHAR(255) NOT NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

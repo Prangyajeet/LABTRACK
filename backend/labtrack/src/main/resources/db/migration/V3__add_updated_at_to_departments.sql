@@ -1,0 +1,5 @@
+ALTER TABLE departments
+ADD COLUMN updated_at TIMESTAMP;
+
+ALTER TABLE roles
+ADD COLUMN updated_at TIMESTAMP;
