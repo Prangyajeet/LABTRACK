@@ -38,4 +38,32 @@ public class ApiResponse<T> {
     public void setData(T data) {
         this.data = data;
     }
+
+    /**
+     * Success response with data
+     */
+    public static <T> ApiResponse<T> success(String message, T data) {
+        return new ApiResponse<>(true, message, data);
+    }
+
+    /**
+     * Success response without data
+     */
+    public static <T> ApiResponse<T> success(String message) {
+        return new ApiResponse<>(true, message, null);
+    }
+
+    /**
+     * Error response
+     */
+    public static <T> ApiResponse<T> error(String message) {
+        return new ApiResponse<>(false, message, null);
+    }
+
+    /**
+     * Error response with data
+     */
+    public static <T> ApiResponse<T> error(String message, T data) {
+        return new ApiResponse<>(false, message, data);
+    }
 }

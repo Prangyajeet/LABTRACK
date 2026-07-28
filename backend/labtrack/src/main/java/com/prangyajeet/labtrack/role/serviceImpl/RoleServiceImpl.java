@@ -41,21 +41,20 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleResponseDTO createRole(RoleRequestDTO dto) {
+public RoleResponseDTO createRole(RoleRequestDTO dto) {
 
-        if (roleRepository.existsByRoleName(dto.getRoleName())) {
-            throw new DuplicateResourceException(
-                    "Role '" + dto.getRoleName() + "' already exists.");
-        }
-
-        Role role = new Role();
-        role.setRoleName(dto.getRoleName());
-        role.setDescription(dto.getDescription());
-
-        Role savedRole = roleRepository.save(role);
-
-        return mapToResponseDTO(savedRole);
+    if (roleRepository.existsByRoleName(dto.getRoleName())) {
+        throw new DuplicateResourceException("Role already exists.");
     }
+
+    Role role = new Role();
+    role.setRoleName(dto.getRoleName());
+    role.setDescription(dto.getDescription());
+
+    Role savedRole = roleRepository.save(role);
+
+    return mapToResponseDTO(savedRole);
+}
 
     @Override
     public RoleResponseDTO updateRole(Long id, RoleRequestDTO dto) {
