@@ -61,6 +61,12 @@ public class InventoryItem extends AuditableEntity {
     @Column(name = "remarks", length = 500)
     private String remarks;
 
+    @Column(name = "is_consumable", nullable = false)
+private Boolean isConsumable = false;
+
+@Column(name = "reorder_quantity", nullable = false)
+private Integer reorderQuantity = 0;
+
     public InventoryItem() {
     }
 
@@ -183,4 +189,20 @@ public class InventoryItem extends AuditableEntity {
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
+
+    public Boolean getIsConsumable() {
+    return isConsumable;
+}
+
+public void setIsConsumable(Boolean isConsumable) {
+    this.isConsumable = isConsumable;
+}
+
+public Integer getReorderQuantity() {
+    return reorderQuantity;
+}
+
+public void setReorderQuantity(Integer reorderQuantity) {
+    this.reorderQuantity = reorderQuantity;
+}
 }

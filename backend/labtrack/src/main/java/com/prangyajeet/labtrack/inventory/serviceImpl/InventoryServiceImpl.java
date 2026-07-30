@@ -74,6 +74,8 @@ public class InventoryServiceImpl implements InventoryService {
         item.setManufactureDate(requestDTO.getManufactureDate());
         item.setExpiryDate(requestDTO.getExpiryDate());
         item.setRemarks(requestDTO.getRemarks());
+        item.setIsConsumable(requestDTO.getIsConsumable());
+        item.setReorderQuantity(requestDTO.getReorderQuantity());
         item.setStatus(Status.ACTIVE);
 
         InventoryItem savedItem = inventoryRepository.save(item);
@@ -140,6 +142,8 @@ public class InventoryServiceImpl implements InventoryService {
         dto.setExpiryDate(item.getExpiryDate());
 
         dto.setRemarks(item.getRemarks());
+        dto.setIsConsumable(item.getIsConsumable());
+dto.setReorderQuantity(item.getReorderQuantity());
 
         dto.setStatus(item.getStatus().name());
         dto.setCreatedAt(item.getCreatedAt());
@@ -185,6 +189,8 @@ public class InventoryServiceImpl implements InventoryService {
         item.setManufactureDate(requestDTO.getManufactureDate());
         item.setExpiryDate(requestDTO.getExpiryDate());
         item.setRemarks(requestDTO.getRemarks());
+        item.setIsConsumable(requestDTO.getIsConsumable());
+item.setReorderQuantity(requestDTO.getReorderQuantity());
 
         InventoryItem updatedItem = inventoryRepository.save(item);
 
@@ -293,5 +299,11 @@ public class InventoryServiceImpl implements InventoryService {
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateInventoryQuantity(Long inventoryItemId, Integer quantity) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateInventoryQuantity'");
     }
 }

@@ -1,0 +1,3 @@
+ALTER TABLE inventory_items
+ADD COLUMN is_consumable BOOLEAN NOT NULL DEFAULT FALSE,
+ADD COLUMN reorder_quantity INTEGER NOT NULL DEFAULT 0;

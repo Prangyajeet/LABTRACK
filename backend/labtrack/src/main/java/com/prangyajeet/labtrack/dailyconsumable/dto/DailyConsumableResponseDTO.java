@@ -1,59 +1,35 @@
-package com.prangyajeet.labtrack.inventory.dto;
+package com.prangyajeet.labtrack.dailyconsumable.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public class InventoryResponseDTO {
+public class DailyConsumableResponseDTO {
 
     private Long id;
-
     private String itemCode;
-
     private String itemName;
-
     private String description;
 
-    private Long categoryId;
-
     private String categoryName;
-
-    private Long supplierId;
-
     private String supplierName;
-
-    private Long storageLocationId;
-
     private String storageLocationName;
 
     private String unit;
 
     private Integer quantity;
-
     private Integer minimumQuantity;
-
-    private Integer maximumQuantity;
+    private Integer reorderQuantity;
 
     private BigDecimal unitPrice;
 
     private String batchNumber;
 
     private LocalDate manufactureDate;
-
     private LocalDate expiryDate;
 
     private String remarks;
 
-    private String status;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    private Boolean isConsumable;
-private Integer reorderQuantity;
-
-    public InventoryResponseDTO() {
+    public DailyConsumableResponseDTO() {
     }
 
     public Long getId() {
@@ -88,14 +64,6 @@ private Integer reorderQuantity;
         this.description = description;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-
     public String getCategoryName() {
         return categoryName;
     }
@@ -104,28 +72,12 @@ private Integer reorderQuantity;
         this.categoryName = categoryName;
     }
 
-    public Long getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(Long supplierId) {
-        this.supplierId = supplierId;
-    }
-
     public String getSupplierName() {
         return supplierName;
     }
 
     public void setSupplierName(String supplierName) {
         this.supplierName = supplierName;
-    }
-
-    public Long getStorageLocationId() {
-        return storageLocationId;
-    }
-
-    public void setStorageLocationId(Long storageLocationId) {
-        this.storageLocationId = storageLocationId;
     }
 
     public String getStorageLocationName() {
@@ -160,12 +112,12 @@ private Integer reorderQuantity;
         this.minimumQuantity = minimumQuantity;
     }
 
-    public Integer getMaximumQuantity() {
-        return maximumQuantity;
+    public Integer getReorderQuantity() {
+        return reorderQuantity;
     }
 
-    public void setMaximumQuantity(Integer maximumQuantity) {
-        this.maximumQuantity = maximumQuantity;
+    public void setReorderQuantity(Integer reorderQuantity) {
+        this.reorderQuantity = reorderQuantity;
     }
 
     public BigDecimal getUnitPrice() {
@@ -207,45 +159,4 @@ private Integer reorderQuantity;
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Boolean getIsConsumable() {
-    return isConsumable;
-}
-
-public void setIsConsumable(Boolean isConsumable) {
-    this.isConsumable = isConsumable;
-}
-
-public Integer getReorderQuantity() {
-    return reorderQuantity;
-}
-
-public void setReorderQuantity(Integer reorderQuantity) {
-    this.reorderQuantity = reorderQuantity;
-}
-
 }

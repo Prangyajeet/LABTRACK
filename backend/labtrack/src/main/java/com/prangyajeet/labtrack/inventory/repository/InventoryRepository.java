@@ -70,4 +70,16 @@ public interface InventoryRepository extends JpaRepository<InventoryItem, Long> 
         String keyword,
         Status status
 );
+
+List<InventoryItem> findByIsConsumableTrueAndStatus(Status status);
+
+Optional<InventoryItem> findByIdAndIsConsumableTrueAndStatus(
+        Long id,
+        Status status
+);
+
+List<InventoryItem> findByIsConsumableTrueAndQuantityLessThanEqualAndStatus(
+        Integer quantity,
+        Status status
+);
 }

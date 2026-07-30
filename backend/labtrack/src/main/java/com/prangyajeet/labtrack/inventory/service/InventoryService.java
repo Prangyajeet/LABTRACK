@@ -10,6 +10,7 @@ public interface InventoryService {
     InventoryResponseDTO createInventoryItem(InventoryRequestDTO requestDTO);
 
     InventoryResponseDTO getInventoryItemById(Long id);
+    void updateInventoryQuantity(Long inventoryItemId, Integer quantity);
 
     List<InventoryResponseDTO> getAllInventoryItems();
 

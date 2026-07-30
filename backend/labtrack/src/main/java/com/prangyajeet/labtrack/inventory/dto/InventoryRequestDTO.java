@@ -50,6 +50,12 @@ public class InventoryRequestDTO {
     private LocalDate expiryDate;
 
     private String remarks;
+@NotNull(message = "Consumable status is required")
+private Boolean isConsumable;
+
+@NotNull(message = "Reorder quantity is required")
+@Min(value = 0, message = "Reorder quantity cannot be negative")
+private Integer reorderQuantity;
 
     public InventoryRequestDTO() {
     }
@@ -165,4 +171,21 @@ public class InventoryRequestDTO {
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
+
+    public Boolean getIsConsumable() {
+    return isConsumable;
+}
+
+public void setIsConsumable(Boolean isConsumable) {
+    this.isConsumable = isConsumable;
+}
+
+public Integer getReorderQuantity() {
+    return reorderQuantity;
+}
+
+public void setReorderQuantity(Integer reorderQuantity) {
+    this.reorderQuantity = reorderQuantity;
+}
+
 }
