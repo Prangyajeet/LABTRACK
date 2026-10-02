@@ -7,14 +7,24 @@ import java.util.List;
 
 public interface SupplierService {
 
-    SupplierResponseDTO createSupplier(SupplierRequestDTO supplierRequestDTO);
+    SupplierResponseDTO createSupplier(
+            SupplierRequestDTO supplierRequestDTO
+    );
 
-    SupplierResponseDTO getSupplierById(Long supplierId);
+    SupplierResponseDTO getSupplierById(
+            Long supplierId
+    );
 
     List<SupplierResponseDTO> getAllSuppliers();
 
-    SupplierResponseDTO updateSupplier(Long supplierId,
-                                       SupplierRequestDTO supplierRequestDTO);
+    SupplierResponseDTO updateSupplier(
+            Long supplierId,
+            SupplierRequestDTO supplierRequestDTO
+    );
 
-    void deleteSupplier(Long supplierId);
+    void deleteSupplier(
+            Long supplierId
+    );
+
+    
 }

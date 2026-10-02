@@ -11,10 +11,16 @@ public interface DepartmentService {
 
     DepartmentResponseDTO getDepartmentById(Long id);
 
-    DepartmentResponseDTO createDepartment(DepartmentRequestDTO dto);
+    DepartmentResponseDTO createDepartment(
+            DepartmentRequestDTO requestDTO
+    );
 
-    DepartmentResponseDTO updateDepartment(Long id,
-                                           DepartmentRequestDTO dto);
+    DepartmentResponseDTO updateDepartment(
+            Long id,
+            DepartmentRequestDTO requestDTO
+    );
 
     void deleteDepartment(Long id);
+
+    void restoreDepartment(Long id);
 }

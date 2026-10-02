@@ -1,6 +1,8 @@
 package com.prangyajeet.labtrack.supplier.entity;
 
+import com.prangyajeet.labtrack.common.enums.Status;
 import com.prangyajeet.labtrack.common.entity.AuditableEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -9,25 +11,72 @@ import jakarta.persistence.Table;
 @Table(name = "suppliers")
 public class Supplier extends AuditableEntity {
 
-    @Column(name = "supplier_name", nullable = false, length = 100)
+    @Column(
+            name = "supplier_code",
+            nullable = false,
+            unique = true,
+            length = 30
+    )
+    private String supplierCode;
+
+    @Column(
+            name = "supplier_name",
+            nullable = false,
+            length = 100
+    )
     private String supplierName;
 
-    @Column(name = "contact_person", nullable = false, length = 100)
+    @Column(
+            name = "contact_person",
+            nullable = false,
+            length = 100
+    )
     private String contactPerson;
 
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(
+            name = "email",
+            nullable = false,
+            length = 100
+    )
     private String email;
 
-    @Column(name = "phone_number", nullable = false, length = 15)
+    @Column(
+            name = "phone_number",
+            nullable = false,
+            length = 20
+    )
     private String phoneNumber;
 
-    @Column(name = "address", nullable = false, columnDefinition = "TEXT")
+    @Column(
+            name = "address_line1",
+            nullable = false,
+            length = 255
+    )
     private String address;
 
-    @Column(name = "gst_number", nullable = false, length = 20)
+    @Column(
+            name = "gst_number",
+            nullable = false,
+            length = 20
+    )
     private String gstNumber;
 
+    @Column(
+            name = "status",
+            nullable = false,
+            length = 20
+    )
+    private Status status;
+
     public Supplier() {
+    }
+
+    public String getSupplierCode() {
+        return supplierCode;
+    }
+
+    public void setSupplierCode(String supplierCode) {
+        this.supplierCode = supplierCode;
     }
 
     public String getSupplierName() {
@@ -76,5 +125,13 @@ public class Supplier extends AuditableEntity {
 
     public void setGstNumber(String gstNumber) {
         this.gstNumber = gstNumber;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

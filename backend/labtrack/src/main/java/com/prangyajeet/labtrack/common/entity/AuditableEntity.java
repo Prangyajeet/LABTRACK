@@ -1,5 +1,7 @@
 package com.prangyajeet.labtrack.common.entity;
 
+import com.prangyajeet.labtrack.common.enums.Status;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -8,8 +10,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 
 import java.time.LocalDateTime;
-
-import com.prangyajeet.labtrack.common.enums.Status;
 
 @MappedSuperclass
 public abstract class AuditableEntity extends BaseEntity {
@@ -27,7 +27,18 @@ public abstract class AuditableEntity extends BaseEntity {
     @PrePersist
     protected void onCreate() {
 
-        this.createdAt = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+
+        this.createdAt = now;
+
+        /*
+         * Keep updated_at populated from the first insert.
+         *
+         * The production database expects updated_at to contain
+         * a value, and a newly created entity has not yet triggered
+         * @PreUpdate.
+         */
+        this.updatedAt = now;
 
         if (this.status == null) {
             this.status = Status.ACTIVE;

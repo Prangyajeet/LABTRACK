@@ -12,9 +12,11 @@ import com.prangyajeet.labtrack.storage.entity.StorageLocation;
 import com.prangyajeet.labtrack.storage.repository.StorageLocationRepository;
 import com.prangyajeet.labtrack.supplier.entity.Supplier;
 import com.prangyajeet.labtrack.supplier.repository.SupplierRepository;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,22 +42,41 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public InventoryResponseDTO createInventoryItem(InventoryRequestDTO requestDTO) {
+    public InventoryResponseDTO createInventoryItem(
+            InventoryRequestDTO requestDTO) {
 
         Category category = categoryRepository
-                .findByIdAndStatus(requestDTO.getCategoryId(), Status.ACTIVE)
+                .findByIdAndStatus(
+                        requestDTO.getCategoryId(),
+                        Status.ACTIVE
+                )
                 .orElseThrow(() ->
-                        new RuntimeException("Category not found"));
+                        new RuntimeException(
+                                "Category not found"
+                        )
+                );
 
         Supplier supplier = supplierRepository
-                .findByIdAndStatus(requestDTO.getSupplierId(), Status.ACTIVE)
+                .findByIdAndStatus(
+                        requestDTO.getSupplierId(),
+                        Status.ACTIVE
+                )
                 .orElseThrow(() ->
-                        new RuntimeException("Supplier not found"));
+                        new RuntimeException(
+                                "Supplier not found"
+                        )
+                );
 
         StorageLocation location = storageLocationRepository
-                .findByIdAndStatus(requestDTO.getStorageLocationId(), Status.ACTIVE)
+                .findByIdAndStatus(
+                        requestDTO.getStorageLocationId(),
+                        Status.ACTIVE
+                )
                 .orElseThrow(() ->
-                        new RuntimeException("Storage Location not found"));
+                        new RuntimeException(
+                                "Storage Location not found"
+                        )
+                );
 
         InventoryItem item = new InventoryItem();
 
@@ -78,19 +99,27 @@ public class InventoryServiceImpl implements InventoryService {
         item.setReorderQuantity(requestDTO.getReorderQuantity());
         item.setStatus(Status.ACTIVE);
 
-        InventoryItem savedItem = inventoryRepository.save(item);
+        InventoryItem savedItem =
+                inventoryRepository.save(item);
 
         return mapToResponse(savedItem);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public InventoryResponseDTO getInventoryItemById(Long id) {
+    public InventoryResponseDTO getInventoryItemById(
+            Long id) {
 
         InventoryItem item = inventoryRepository
-                .findByIdAndStatus(id, Status.ACTIVE)
+                .findByIdAndStatus(
+                        id,
+                        Status.ACTIVE
+                )
                 .orElseThrow(() ->
-                        new RuntimeException("Inventory Item not found"));
+                        new RuntimeException(
+                                "Inventory Item not found"
+                        )
+                );
 
         return mapToResponse(item);
     }
@@ -108,91 +137,211 @@ public class InventoryServiceImpl implements InventoryService {
 
     private String generateItemCode() {
 
-        long count = inventoryRepository.count() + 1;
+        long count =
+                inventoryRepository.count() + 1;
 
-        return String.format("LAB%06d", count);
+        return String.format(
+                "LAB%06d",
+                count
+        );
     }
 
-    private InventoryResponseDTO mapToResponse(InventoryItem item) {
+    private InventoryResponseDTO mapToResponse(
+            InventoryItem item) {
 
-        InventoryResponseDTO dto = new InventoryResponseDTO();
+        InventoryResponseDTO dto =
+                new InventoryResponseDTO();
 
         dto.setId(item.getId());
         dto.setItemCode(item.getItemCode());
         dto.setItemName(item.getItemName());
         dto.setDescription(item.getDescription());
 
-        dto.setCategoryId(item.getCategory().getId());
-        dto.setCategoryName(item.getCategory().getCategoryName());
+        dto.setCategoryId(
+                item.getCategory().getId()
+        );
 
-        dto.setSupplierId(item.getSupplier().getId());
-        dto.setSupplierName(item.getSupplier().getSupplierName());
+        dto.setCategoryName(
+                item.getCategory().getCategoryName()
+        );
 
-        dto.setStorageLocationId(item.getStorageLocation().getId());
-        dto.setStorageLocationName(item.getStorageLocation().getLocationName());
+        dto.setSupplierId(
+                item.getSupplier().getId()
+        );
+
+        dto.setSupplierName(
+                item.getSupplier().getSupplierName()
+        );
+
+        dto.setStorageLocationId(
+                item.getStorageLocation().getId()
+        );
+
+        dto.setStorageLocationName(
+                item.getStorageLocation().getLocationName()
+        );
 
         dto.setUnit(item.getUnit());
         dto.setQuantity(item.getQuantity());
-        dto.setMinimumQuantity(item.getMinimumQuantity());
-        dto.setMaximumQuantity(item.getMaximumQuantity());
+
+        dto.setMinimumQuantity(
+                item.getMinimumQuantity()
+        );
+
+        dto.setMaximumQuantity(
+                item.getMaximumQuantity()
+        );
+
         dto.setUnitPrice(item.getUnitPrice());
 
-        dto.setBatchNumber(item.getBatchNumber());
-        dto.setManufactureDate(item.getManufactureDate());
-        dto.setExpiryDate(item.getExpiryDate());
+        dto.setBatchNumber(
+                item.getBatchNumber()
+        );
 
-        dto.setRemarks(item.getRemarks());
-        dto.setIsConsumable(item.getIsConsumable());
-dto.setReorderQuantity(item.getReorderQuantity());
+        dto.setManufactureDate(
+                item.getManufactureDate()
+        );
 
-        dto.setStatus(item.getStatus().name());
-        dto.setCreatedAt(item.getCreatedAt());
-        dto.setUpdatedAt(item.getUpdatedAt());
+        dto.setExpiryDate(
+                item.getExpiryDate()
+        );
+
+        dto.setRemarks(
+                item.getRemarks()
+        );
+
+        dto.setIsConsumable(
+                item.getIsConsumable()
+        );
+
+        dto.setReorderQuantity(
+                item.getReorderQuantity()
+        );
+
+        dto.setStatus(
+                item.getStatus().name()
+        );
+
+        dto.setCreatedAt(
+                item.getCreatedAt()
+        );
+
+        dto.setUpdatedAt(
+                item.getUpdatedAt()
+        );
 
         return dto;
-    }    @Override
+    }
+
+    @Override
     public InventoryResponseDTO updateInventoryItem(
             Long id,
             InventoryRequestDTO requestDTO) {
 
         InventoryItem item = inventoryRepository
-                .findByIdAndStatus(id, Status.ACTIVE)
+                .findByIdAndStatus(
+                        id,
+                        Status.ACTIVE
+                )
                 .orElseThrow(() ->
-                        new RuntimeException("Inventory Item not found"));
+                        new RuntimeException(
+                                "Inventory Item not found"
+                        )
+                );
 
         Category category = categoryRepository
-                .findByIdAndStatus(requestDTO.getCategoryId(), Status.ACTIVE)
+                .findByIdAndStatus(
+                        requestDTO.getCategoryId(),
+                        Status.ACTIVE
+                )
                 .orElseThrow(() ->
-                        new RuntimeException("Category not found"));
+                        new RuntimeException(
+                                "Category not found"
+                        )
+                );
 
         Supplier supplier = supplierRepository
-                .findByIdAndStatus(requestDTO.getSupplierId(), Status.ACTIVE)
+                .findByIdAndStatus(
+                        requestDTO.getSupplierId(),
+                        Status.ACTIVE
+                )
                 .orElseThrow(() ->
-                        new RuntimeException("Supplier not found"));
+                        new RuntimeException(
+                                "Supplier not found"
+                        )
+                );
 
-        StorageLocation location = storageLocationRepository
-                .findByIdAndStatus(requestDTO.getStorageLocationId(), Status.ACTIVE)
-                .orElseThrow(() ->
-                        new RuntimeException("Storage Location not found"));
+        StorageLocation location =
+                storageLocationRepository
+                        .findByIdAndStatus(
+                                requestDTO
+                                        .getStorageLocationId(),
+                                Status.ACTIVE
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Storage Location not found"
+                                )
+                        );
 
-        item.setItemName(requestDTO.getItemName());
-        item.setDescription(requestDTO.getDescription());
+        item.setItemName(
+                requestDTO.getItemName()
+        );
+
+        item.setDescription(
+                requestDTO.getDescription()
+        );
+
         item.setCategory(category);
         item.setSupplier(supplier);
         item.setStorageLocation(location);
-        item.setUnit(requestDTO.getUnit());
-        item.setQuantity(requestDTO.getQuantity());
-        item.setMinimumQuantity(requestDTO.getMinimumQuantity());
-        item.setMaximumQuantity(requestDTO.getMaximumQuantity());
-        item.setUnitPrice(requestDTO.getUnitPrice());
-        item.setBatchNumber(requestDTO.getBatchNumber());
-        item.setManufactureDate(requestDTO.getManufactureDate());
-        item.setExpiryDate(requestDTO.getExpiryDate());
-        item.setRemarks(requestDTO.getRemarks());
-        item.setIsConsumable(requestDTO.getIsConsumable());
-item.setReorderQuantity(requestDTO.getReorderQuantity());
 
-        InventoryItem updatedItem = inventoryRepository.save(item);
+        item.setUnit(
+                requestDTO.getUnit()
+        );
+
+        item.setQuantity(
+                requestDTO.getQuantity()
+        );
+
+        item.setMinimumQuantity(
+                requestDTO.getMinimumQuantity()
+        );
+
+        item.setMaximumQuantity(
+                requestDTO.getMaximumQuantity()
+        );
+
+        item.setUnitPrice(
+                requestDTO.getUnitPrice()
+        );
+
+        item.setBatchNumber(
+                requestDTO.getBatchNumber()
+        );
+
+        item.setManufactureDate(
+                requestDTO.getManufactureDate()
+        );
+
+        item.setExpiryDate(
+                requestDTO.getExpiryDate()
+        );
+
+        item.setRemarks(
+                requestDTO.getRemarks()
+        );
+
+        item.setIsConsumable(
+                requestDTO.getIsConsumable()
+        );
+
+        item.setReorderQuantity(
+                requestDTO.getReorderQuantity()
+        );
+
+        InventoryItem updatedItem =
+                inventoryRepository.save(item);
 
         return mapToResponse(updatedItem);
     }
@@ -201,9 +350,15 @@ item.setReorderQuantity(requestDTO.getReorderQuantity());
     public void deleteInventoryItem(Long id) {
 
         InventoryItem item = inventoryRepository
-                .findByIdAndStatus(id, Status.ACTIVE)
+                .findByIdAndStatus(
+                        id,
+                        Status.ACTIVE
+                )
                 .orElseThrow(() ->
-                        new RuntimeException("Inventory Item not found"));
+                        new RuntimeException(
+                                "Inventory Item not found"
+                        )
+                );
 
         item.setStatus(Status.INACTIVE);
 
@@ -212,12 +367,14 @@ item.setReorderQuantity(requestDTO.getReorderQuantity());
 
     @Override
     @Transactional(readOnly = true)
-    public List<InventoryResponseDTO> searchInventoryItems(String keyword) {
+    public List<InventoryResponseDTO> searchInventoryItems(
+            String keyword) {
 
         return inventoryRepository
                 .findByItemNameContainingIgnoreCaseAndStatus(
                         keyword,
-                        Status.ACTIVE)
+                        Status.ACTIVE
+                )
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -225,10 +382,14 @@ item.setReorderQuantity(requestDTO.getReorderQuantity());
 
     @Override
     @Transactional(readOnly = true)
-    public List<InventoryResponseDTO> getInventoryByCategory(Long categoryId) {
+    public List<InventoryResponseDTO> getInventoryByCategory(
+            Long categoryId) {
 
         return inventoryRepository
-                .findByCategoryIdAndStatus(categoryId, Status.ACTIVE)
+                .findByCategoryIdAndStatus(
+                        categoryId,
+                        Status.ACTIVE
+                )
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -236,10 +397,14 @@ item.setReorderQuantity(requestDTO.getReorderQuantity());
 
     @Override
     @Transactional(readOnly = true)
-    public List<InventoryResponseDTO> getInventoryBySupplier(Long supplierId) {
+    public List<InventoryResponseDTO> getInventoryBySupplier(
+            Long supplierId) {
 
         return inventoryRepository
-                .findBySupplierIdAndStatus(supplierId, Status.ACTIVE)
+                .findBySupplierIdAndStatus(
+                        supplierId,
+                        Status.ACTIVE
+                )
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -247,12 +412,14 @@ item.setReorderQuantity(requestDTO.getReorderQuantity());
 
     @Override
     @Transactional(readOnly = true)
-    public List<InventoryResponseDTO> getInventoryByStorageLocation(Long storageLocationId) {
+    public List<InventoryResponseDTO> getInventoryByStorageLocation(
+            Long storageLocationId) {
 
         return inventoryRepository
                 .findByStorageLocationIdAndStatus(
                         storageLocationId,
-                        Status.ACTIVE)
+                        Status.ACTIVE
+                )
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -266,7 +433,9 @@ item.setReorderQuantity(requestDTO.getReorderQuantity());
                 .findAllByStatus(Status.ACTIVE)
                 .stream()
                 .filter(item ->
-                        item.getQuantity() <= item.getMinimumQuantity())
+                        item.getQuantity()
+                                <= item.getMinimumQuantity()
+                )
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
@@ -277,8 +446,9 @@ item.setReorderQuantity(requestDTO.getReorderQuantity());
 
         return inventoryRepository
                 .findByExpiryDateBeforeAndStatus(
-                        java.time.LocalDate.now(),
-                        Status.ACTIVE)
+                        LocalDate.now(),
+                        Status.ACTIVE
+                )
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -286,24 +456,78 @@ item.setReorderQuantity(requestDTO.getReorderQuantity());
 
     @Override
     @Transactional(readOnly = true)
-    public List<InventoryResponseDTO> getExpiringSoonItems(int days) {
+    public List<InventoryResponseDTO> getExpiringSoonItems(
+            int days) {
 
-        java.time.LocalDate today = java.time.LocalDate.now();
-        java.time.LocalDate endDate = today.plusDays(days);
+        LocalDate today =
+                LocalDate.now();
+
+        LocalDate endDate =
+                today.plusDays(days);
 
         return inventoryRepository
                 .findByExpiryDateBetweenAndStatus(
                         today,
                         endDate,
-                        Status.ACTIVE)
+                        Status.ACTIVE
+                )
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void updateInventoryQuantity(Long inventoryItemId, Integer quantity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateInventoryQuantity'");
+    public void updateInventoryQuantity(
+            Long inventoryItemId,
+            Integer quantity) {
+
+        if (inventoryItemId == null) {
+            throw new IllegalArgumentException(
+                    "Inventory Item ID cannot be null."
+            );
+        }
+
+        if (quantity == null) {
+            throw new IllegalArgumentException(
+                    "Quantity cannot be null."
+            );
+        }
+
+        InventoryItem item = inventoryRepository
+                .findByIdAndStatus(
+                        inventoryItemId,
+                        Status.ACTIVE
+                )
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Inventory Item not found"
+                        )
+                );
+
+        Integer currentQuantity =
+                item.getQuantity() != null
+                        ? item.getQuantity()
+                        : 0;
+
+        int newQuantity =
+                currentQuantity + quantity;
+
+        if (newQuantity < 0) {
+            throw new IllegalArgumentException(
+                    "Inventory quantity cannot be negative."
+            );
+        }
+
+        if (item.getMaximumQuantity() != null
+                && newQuantity > item.getMaximumQuantity()) {
+
+            throw new IllegalArgumentException(
+                    "Inventory quantity cannot exceed maximum quantity."
+            );
+        }
+
+        item.setQuantity(newQuantity);
+
+        inventoryRepository.save(item);
     }
 }

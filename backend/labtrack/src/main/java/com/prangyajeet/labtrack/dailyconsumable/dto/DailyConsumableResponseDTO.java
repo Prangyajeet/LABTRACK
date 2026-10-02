@@ -6,6 +6,7 @@ import java.time.LocalDate;
 public class DailyConsumableResponseDTO {
 
     private Long id;
+
     private String itemCode;
     private String itemName;
     private String description;

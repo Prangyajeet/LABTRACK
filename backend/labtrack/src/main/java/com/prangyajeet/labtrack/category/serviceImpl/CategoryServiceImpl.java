@@ -19,124 +19,304 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+
     private final DepartmentRepository departmentRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository,
-                               DepartmentRepository departmentRepository) {
+    public CategoryServiceImpl(
+            CategoryRepository categoryRepository,
+            DepartmentRepository departmentRepository
+    ) {
         this.categoryRepository = categoryRepository;
         this.departmentRepository = departmentRepository;
     }
 
+    /*
+     * ============================================================
+     * CREATE CATEGORY
+     * ============================================================
+     */
+
     @Override
-    public CategoryResponseDTO createCategory(CategoryRequestDTO requestDTO) {
+    public CategoryResponseDTO createCategory(
+            CategoryRequestDTO requestDTO
+    ) {
 
-        Department department = departmentRepository
-                .findByIdAndStatus(requestDTO.getDepartmentId(), Status.ACTIVE)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Department not found or inactive."));
+        Department department =
+                departmentRepository
+                        .findByIdAndStatus(
+                                requestDTO.getDepartmentId(),
+                                Status.ACTIVE
+                        )
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Department not found or inactive."
+                                )
+                        );
 
-        if (categoryRepository.existsByDepartmentIdAndCategoryNameAndStatus(
-                requestDTO.getDepartmentId(),
-                requestDTO.getCategoryName(),
-                Status.ACTIVE)) {
+        boolean exists =
+                categoryRepository
+                        .existsByDepartmentIdAndCategoryNameAndStatus(
+                                requestDTO.getDepartmentId(),
+                                requestDTO.getCategoryName(),
+                                Status.ACTIVE
+                        );
+
+        if (exists) {
 
             throw new DuplicateResourceException(
-                    "Category already exists in this department.");
+                    "Category already exists in this department."
+            );
         }
 
         Category category = new Category();
 
         category.setDepartment(department);
-        category.setCategoryName(requestDTO.getCategoryName());
-        category.setDescription(requestDTO.getDescription());
-        category.setStatus(Status.ACTIVE);
 
-        Category saved = categoryRepository.save(category);
+        category.setCategoryName(
+                requestDTO.getCategoryName()
+        );
 
-        return mapToResponse(saved);
+        category.setDescription(
+                requestDTO.getDescription()
+        );
+
+        category.setStatus(
+                Status.ACTIVE
+        );
+
+        Category savedCategory =
+                categoryRepository.save(category);
+
+        return mapToResponse(savedCategory);
     }
 
-    @Override
-    public CategoryResponseDTO getCategoryById(Long id) {
+    /*
+     * ============================================================
+     * GET CATEGORY BY ID
+     * ============================================================
+     */
 
-        Category category = categoryRepository
-                .findByIdAndStatus(id, Status.ACTIVE)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Category not found."));
+    @Override
+    public CategoryResponseDTO getCategoryById(
+            Long id
+    ) {
+
+        Category category =
+                categoryRepository
+                        .findByIdAndStatus(
+                                id,
+                                Status.ACTIVE
+                        )
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Category not found."
+                                )
+                        );
 
         return mapToResponse(category);
     }
 
+    /*
+     * ============================================================
+     * GET ALL ACTIVE CATEGORIES
+     * ============================================================
+     */
+
     @Override
     public List<CategoryResponseDTO> getAllCategories() {
 
-        return categoryRepository.findAllByStatus(Status.ACTIVE)
+        return categoryRepository
+                .findAllByStatus(Status.ACTIVE)
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
+    /*
+     * ============================================================
+     * UPDATE CATEGORY
+     * ============================================================
+     */
+
     @Override
-    public CategoryResponseDTO updateCategory(Long id,
-                                              CategoryRequestDTO requestDTO) {
+    public CategoryResponseDTO updateCategory(
+            Long id,
+            CategoryRequestDTO requestDTO
+    ) {
 
-        Category category = categoryRepository
-                .findByIdAndStatus(id, Status.ACTIVE)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Category not found."));
+        Category category =
+                categoryRepository
+                        .findByIdAndStatus(
+                                id,
+                                Status.ACTIVE
+                        )
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Category not found."
+                                )
+                        );
 
-        Department department = departmentRepository
-                .findByIdAndStatus(requestDTO.getDepartmentId(), Status.ACTIVE)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Department not found or inactive."));
+        Department department =
+                departmentRepository
+                        .findByIdAndStatus(
+                                requestDTO.getDepartmentId(),
+                                Status.ACTIVE
+                        )
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Department not found or inactive."
+                                )
+                        );
 
-        if ((!category.getCategoryName().equalsIgnoreCase(requestDTO.getCategoryName())
-                || !category.getDepartment().getId().equals(requestDTO.getDepartmentId()))
-                && categoryRepository.existsByDepartmentIdAndCategoryNameAndStatus(
-                requestDTO.getDepartmentId(),
-                requestDTO.getCategoryName(),
-                Status.ACTIVE)) {
+        boolean departmentChanged =
+                !category.getDepartment()
+                        .getId()
+                        .equals(
+                                requestDTO.getDepartmentId()
+                        );
+
+        boolean categoryNameChanged =
+                !category.getCategoryName()
+                        .equalsIgnoreCase(
+                                requestDTO.getCategoryName()
+                        );
+
+        if (
+                (departmentChanged || categoryNameChanged)
+                        &&
+                categoryRepository
+                        .existsByDepartmentIdAndCategoryNameAndStatus(
+                                requestDTO.getDepartmentId(),
+                                requestDTO.getCategoryName(),
+                                Status.ACTIVE
+                        )
+        ) {
 
             throw new DuplicateResourceException(
-                    "Category already exists in this department.");
+                    "Category already exists in this department."
+            );
         }
 
         category.setDepartment(department);
-        category.setCategoryName(requestDTO.getCategoryName());
-        category.setDescription(requestDTO.getDescription());
 
-        Category updated = categoryRepository.save(category);
+        category.setCategoryName(
+                requestDTO.getCategoryName()
+        );
 
-        return mapToResponse(updated);
+        category.setDescription(
+                requestDTO.getDescription()
+        );
+
+        Category updatedCategory =
+                categoryRepository.save(category);
+
+        return mapToResponse(updatedCategory);
     }
 
+    /*
+     * ============================================================
+     * SOFT DELETE CATEGORY
+     * ============================================================
+     */
+
     @Override
-    public void deleteCategory(Long id) {
+    public void deleteCategory(
+            Long id
+    ) {
 
-        Category category = categoryRepository
-                .findByIdAndStatus(id, Status.ACTIVE)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Category not found."));
+        Category category =
+                categoryRepository
+                        .findByIdAndStatus(
+                                id,
+                                Status.ACTIVE
+                        )
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Category not found."
+                                )
+                        );
 
-        category.setStatus(Status.INACTIVE);
+        category.setStatus(
+                Status.INACTIVE
+        );
 
         categoryRepository.save(category);
     }
 
-    private CategoryResponseDTO mapToResponse(Category category) {
+    /*
+     * ============================================================
+     * RESTORE CATEGORY
+     * ============================================================
+     */
+
+    @Override
+    public void restoreCategory(
+            Long id
+    ) {
+
+        Category category =
+                categoryRepository
+                        .findByIdAndStatus(
+                                id,
+                                Status.INACTIVE
+                        )
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Inactive category not found with ID: "
+                                                + id
+                        )
+                        );
+
+        boolean activeDuplicate =
+                categoryRepository
+                        .existsByDepartmentIdAndCategoryNameAndStatus(
+                                category.getDepartment().getId(),
+                                category.getCategoryName(),
+                                Status.ACTIVE
+                        );
+
+        if (activeDuplicate) {
+
+            throw new DuplicateResourceException(
+                    "An active category with the same name already exists in this department."
+            );
+        }
+
+        category.setStatus(
+                Status.ACTIVE
+        );
+
+        categoryRepository.save(category);
+    }
+
+    /*
+     * ============================================================
+     * ENTITY -> RESPONSE DTO
+     * ============================================================
+     */
+
+    private CategoryResponseDTO mapToResponse(
+            Category category
+    ) {
 
         return new CategoryResponseDTO(
+
                 category.getId(),
+
                 category.getDepartment().getId(),
+
                 category.getDepartment().getDepartmentName(),
+
                 category.getCategoryName(),
+
                 category.getDescription(),
+
+                category.getStatus() != null
+                        ? category.getStatus().name()
+                        : null,
+
                 category.getCreatedAt(),
+
                 category.getUpdatedAt()
         );
     }

@@ -4,12 +4,12 @@ import com.prangyajeet.labtrack.common.response.ApiResponse;
 import com.prangyajeet.labtrack.inventory.dto.InventoryRequestDTO;
 import com.prangyajeet.labtrack.inventory.dto.InventoryResponseDTO;
 import com.prangyajeet.labtrack.inventory.service.InventoryService;
-import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,25 +18,45 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
 
-    public InventoryController(InventoryService inventoryService) {
+    public InventoryController(
+            InventoryService inventoryService) {
+
         this.inventoryService = inventoryService;
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     public ResponseEntity<@Nullable Object> createInventoryItem(
             @Valid @RequestBody InventoryRequestDTO requestDTO) {
 
         InventoryResponseDTO response =
                 inventoryService.createInventoryItem(requestDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(
+        return ResponseEntity.ok(
+                ApiResponse.success(
                         "Inventory item created successfully",
                         response
-                ));
+                )
+        );
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
+    public ResponseEntity<@Nullable Object> getAllInventoryItems() {
+
+        List<InventoryResponseDTO> response =
+                inventoryService.getAllInventoryItems();
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Inventory items fetched successfully",
+                        response
+                )
+        );
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
     public ResponseEntity<@Nullable Object> getInventoryItemById(
             @PathVariable Long id) {
 
@@ -51,21 +71,8 @@ public class InventoryController {
         );
     }
 
-    @GetMapping
-    public ResponseEntity<@Nullable Object> getAllInventoryItems() {
-
-        List<InventoryResponseDTO> response =
-                inventoryService.getAllInventoryItems();
-
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        "Inventory items fetched successfully",
-                        response
-                )
-        );
-    }
-
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     public ResponseEntity<@Nullable Object> updateInventoryItem(
             @PathVariable Long id,
             @Valid @RequestBody InventoryRequestDTO requestDTO) {
@@ -82,6 +89,7 @@ public class InventoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'TECHNICIAN')")
     public ResponseEntity<@Nullable Object> deleteInventoryItem(
             @PathVariable Long id) {
 
@@ -96,6 +104,7 @@ public class InventoryController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
     public ResponseEntity<@Nullable Object> searchInventoryItems(
             @RequestParam String keyword) {
 
@@ -111,6 +120,7 @@ public class InventoryController {
     }
 
     @GetMapping("/category/{categoryId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
     public ResponseEntity<@Nullable Object> getByCategory(
             @PathVariable Long categoryId) {
 
@@ -126,6 +136,7 @@ public class InventoryController {
     }
 
     @GetMapping("/supplier/{supplierId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
     public ResponseEntity<@Nullable Object> getBySupplier(
             @PathVariable Long supplierId) {
 
@@ -141,6 +152,7 @@ public class InventoryController {
     }
 
     @GetMapping("/storage-location/{locationId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
     public ResponseEntity<@Nullable Object> getByStorageLocation(
             @PathVariable Long locationId) {
 
@@ -156,6 +168,7 @@ public class InventoryController {
     }
 
     @GetMapping("/low-stock")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
     public ResponseEntity<@Nullable Object> getLowStockItems() {
 
         List<InventoryResponseDTO> response =
@@ -170,6 +183,7 @@ public class InventoryController {
     }
 
     @GetMapping("/expired")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
     public ResponseEntity<@Nullable Object> getExpiredItems() {
 
         List<InventoryResponseDTO> response =
@@ -184,6 +198,7 @@ public class InventoryController {
     }
 
     @GetMapping("/expiring-soon")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
     public ResponseEntity<@Nullable Object> getExpiringSoonItems(
             @RequestParam(defaultValue = "30") int days) {
 

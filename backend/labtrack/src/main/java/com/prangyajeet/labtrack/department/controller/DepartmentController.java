@@ -1,12 +1,16 @@
 package com.prangyajeet.labtrack.department.controller;
 
 import com.prangyajeet.labtrack.common.response.ApiResponse;
+import com.prangyajeet.labtrack.department.dto.DepartmentDropdownDTO;
 import com.prangyajeet.labtrack.department.dto.DepartmentRequestDTO;
 import com.prangyajeet.labtrack.department.dto.DepartmentResponseDTO;
+import com.prangyajeet.labtrack.department.export.DepartmentExcelExporter;
 import com.prangyajeet.labtrack.department.service.DepartmentService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,14 +21,33 @@ public class DepartmentController {
 
     private final DepartmentService departmentService;
 
-    public DepartmentController(DepartmentService departmentService) {
-        this.departmentService = departmentService;
+    private final DepartmentExcelExporter departmentExcelExporter;
+
+    public DepartmentController(
+            DepartmentService departmentService,
+            DepartmentExcelExporter departmentExcelExporter) {
+
+        this.departmentService =
+                departmentService;
+
+        this.departmentExcelExporter =
+                departmentExcelExporter;
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<DepartmentResponseDTO>>> getAllDepartments() {
+    /*
+     * ============================================================
+     * GET ALL DEPARTMENTS
+     * ADMIN + FACULTY + TECHNICIAN
+     * ============================================================
+     */
 
-        List<DepartmentResponseDTO> departments = departmentService.getAllDepartments();
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
+    public ResponseEntity<ApiResponse<List<DepartmentResponseDTO>>>
+    getAllDepartments() {
+
+        List<DepartmentResponseDTO> departments =
+                departmentService.getAllDepartments();
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -35,11 +58,53 @@ public class DepartmentController {
         );
     }
 
+    /*
+     * ============================================================
+     * DEPARTMENT DROPDOWN
+     * ADMIN + FACULTY + TECHNICIAN
+     * ============================================================
+     */
+
+    @GetMapping("/dropdown")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
+    public ResponseEntity<ApiResponse<List<DepartmentDropdownDTO>>>
+    getDepartmentDropdown() {
+
+        List<DepartmentDropdownDTO> departments =
+                departmentService.getAllDepartments()
+                        .stream()
+                        .map(department ->
+                                new DepartmentDropdownDTO(
+                                        department.getId(),
+                                        department.getDepartmentName()
+                                )
+                        )
+                        .toList();
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        "Departments dropdown fetched successfully.",
+                        departments
+                )
+        );
+    }
+
+    /*
+     * ============================================================
+     * GET DEPARTMENT BY ID
+     * ADMIN + FACULTY + TECHNICIAN
+     * ============================================================
+     */
+
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<DepartmentResponseDTO>> getDepartmentById(
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
+    public ResponseEntity<ApiResponse<DepartmentResponseDTO>>
+    getDepartmentById(
             @PathVariable Long id) {
 
-        DepartmentResponseDTO department = departmentService.getDepartmentById(id);
+        DepartmentResponseDTO department =
+                departmentService.getDepartmentById(id);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -50,26 +115,52 @@ public class DepartmentController {
         );
     }
 
+    /*
+     * ============================================================
+     * CREATE DEPARTMENT
+     * ADMIN ONLY
+     * ============================================================
+     */
+
     @PostMapping
-    public ResponseEntity<ApiResponse<DepartmentResponseDTO>> createDepartment(
-            @Valid @RequestBody DepartmentRequestDTO dto) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<DepartmentResponseDTO>>
+    createDepartment(
+            @RequestBody DepartmentRequestDTO requestDTO) {
 
-        DepartmentResponseDTO department = departmentService.createDepartment(dto);
+        DepartmentResponseDTO department =
+                departmentService.createDepartment(
+                        requestDTO
+                );
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(
+        return ResponseEntity.ok(
+                new ApiResponse<>(
                         true,
                         "Department created successfully.",
                         department
-                ));
+                )
+        );
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<DepartmentResponseDTO>> updateDepartment(
-            @PathVariable Long id,
-            @Valid @RequestBody DepartmentRequestDTO dto) {
+    /*
+     * ============================================================
+     * UPDATE DEPARTMENT
+     * ADMIN ONLY
+     * ============================================================
+     */
 
-        DepartmentResponseDTO department = departmentService.updateDepartment(id, dto);
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<DepartmentResponseDTO>>
+    updateDepartment(
+            @PathVariable Long id,
+            @RequestBody DepartmentRequestDTO requestDTO) {
+
+        DepartmentResponseDTO department =
+                departmentService.updateDepartment(
+                        id,
+                        requestDTO
+                );
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -80,8 +171,17 @@ public class DepartmentController {
         );
     }
 
+    /*
+     * ============================================================
+     * SOFT DELETE DEPARTMENT
+     * ADMIN ONLY
+     * ============================================================
+     */
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteDepartment(
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>>
+    deleteDepartment(
             @PathVariable Long id) {
 
         departmentService.deleteDepartment(id);
@@ -93,5 +193,59 @@ public class DepartmentController {
                         null
                 )
         );
+    }
+
+    /*
+     * ============================================================
+     * RESTORE DEPARTMENT
+     * ADMIN ONLY
+     * ============================================================
+     */
+
+    @PutMapping("/{id}/restore")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>>
+    restoreDepartment(
+            @PathVariable Long id) {
+
+        departmentService.restoreDepartment(id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        "Department restored successfully.",
+                        null
+                )
+        );
+    }
+
+    /*
+     * ============================================================
+     * EXPORT DEPARTMENTS TO EXCEL
+     * ADMIN + FACULTY + TECHNICIAN
+     * ============================================================
+     */
+
+    @GetMapping("/export")
+    @PreAuthorize("hasAnyRole('ADMIN', 'FACULTY', 'TECHNICIAN')")
+    public ResponseEntity<byte[]>
+    exportDepartments() {
+
+        byte[] file =
+                departmentExcelExporter.export(
+                        departmentService.getAllDepartments()
+                );
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=Departments.xlsx"
+                )
+                .contentType(
+                        MediaType.parseMediaType(
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        )
+                )
+                .body(file);
     }
 }
