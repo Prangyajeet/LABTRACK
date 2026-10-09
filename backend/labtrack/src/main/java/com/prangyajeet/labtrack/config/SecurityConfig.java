@@ -95,7 +95,8 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(
                 List.of(
                         "http://localhost:5173",
-                        "https://labtrack-gro7k3hzu-jeets-projects-83843d76.vercel.app"
+                        "https://labtrack-gro7x3hzu-jeets-projects-83843d76.vercel.app",
+                        "https://labtrack-36qcel1gf-jeets-projects-83843d76.vercel.app"
                 )
         );
 
