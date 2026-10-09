@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import useDepartments from "../../hooks/useDepartments";
 
 import DepartmentStats
-    from "../../components/departments/DepartmentStats";
+    from "../../components/departments/departmentStats";
 
 import DepartmentFilters
     from "../../components/departments/DepartmentFilters";
