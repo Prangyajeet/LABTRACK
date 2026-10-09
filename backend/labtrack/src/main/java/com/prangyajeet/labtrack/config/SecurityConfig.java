@@ -1,4 +1,3 @@
-
 package com.prangyajeet.labtrack.config;
 
 import com.prangyajeet.labtrack.security.CustomUserDetailsService;
@@ -96,7 +95,8 @@ public class SecurityConfig {
                 List.of(
                         "http://localhost:5173",
                         "https://labtrack-gro7x3hzu-jeets-projects-83843d76.vercel.app",
-                        "https://labtrack-36qcel1gf-jeets-projects-83843d76.vercel.app"
+                        "https://labtrack-36qcel1gf-jeets-projects-83843d76.vercel.app",
+                        "https://labtrack-ckco64hj3-jeets-projects-83843d76.vercel.app"
                 )
         );
 
@@ -129,16 +129,12 @@ public class SecurityConfig {
         );
 
         configuration.setAllowCredentials(true);
-
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration(
-                "/**",
-                configuration
-        );
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
