@@ -1,3 +1,4 @@
+
 package com.prangyajeet.labtrack.config;
 
 import com.prangyajeet.labtrack.security.CustomUserDetailsService;
@@ -45,7 +46,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
 
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors ->
+                        cors.configurationSource(corsConfigurationSource())
+                )
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
@@ -90,7 +93,10 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of(
+                        "http://localhost:5173",
+                        "https://labtrack-gro7k3hzu-jeets-projects-83843d76.vercel.app"
+                )
         );
 
         configuration.setAllowedMethods(
